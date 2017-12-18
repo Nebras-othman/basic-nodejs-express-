@@ -96,5 +96,17 @@ app.put('/user/:userid', function(req, res) {
   });
 });
 
+app.put('/deleted/:userid' , function(req, res ){
+ //var del = JSON.stringify(req.body.deleted);
+ var del = 'now()';
+ console.log(del);
+  con.query('update customers set deleted = now() where id = ?',[req.params.userid],function (err , rows) {
+  if (err)
+   throw res.json(err);
+
+  console.log(rows);
+});
+});
+
 console.log('Server runs on port: '+ port);
 app.listen(port);
