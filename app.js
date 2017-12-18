@@ -73,14 +73,28 @@ app.post('/user' , function(req, res ){
 });
 
 app.put('/user/:userid', function(req, res) {
-  con.query('Update customers set firstname = ? , lastname = ?, birthdate = ?, phone = ?, city = ?, street = ?, postal = ?, email = ? where id = ?', [req.body.firstname, req.body.lastname, req.body.birthdate, req.body.phone, req.body.city, req.body.street, req.body.postal, req.body.email, req.params.userid], function(err, rows) {
+  
+  var sql = 'update customers set ';
+  var i =1;
+  var bodyLength = Object.keys(req.body).length;
+  var values = [];
+  for(var field in req.body){
+    sql += field + ' ?';
+    if(i < bodyLength)
+      sql += ',';
+    i++;
+    values.push(req.body[field] );
+  }
+  sql += 'where id = ?';
+  values.push(req.params.userid );
+
+  con.query(sql,values, function(err, rows) {
     if (err)
       throw res.json(err);
     console.log(rows);
     res.json(rows);
   });
 });
-
 
 console.log('Server runs on port: '+ port);
 app.listen(port);
